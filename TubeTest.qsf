@@ -51,3 +51,66 @@ set_global_assignment -name NOMINAL_CORE_SUPPLY_VOLTAGE 1.2V
 set_global_assignment -name EDA_SIMULATION_TOOL "ModelSim-Altera (Verilog)"
 set_global_assignment -name EDA_OUTPUT_DATA_FORMAT "VERILOG HDL" -section_id eda_simulation
 set_global_assignment -name VERILOG_FILE TubeTest.v
+set_global_assignment -name PARTITION_NETLIST_TYPE SOURCE -section_id Top
+set_global_assignment -name PARTITION_FITTER_PRESERVATION_LEVEL PLACEMENT_AND_ROUTING -section_id Top
+set_global_assignment -name PARTITION_COLOR 16764057 -section_id Top
+set_global_assignment -name STRATIX_DEVICE_IO_STANDARD "2.5 V"
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to Dot
+set_location_assignment PIN_119 -to Seg[6]
+set_location_assignment PIN_120 -to Seg[5]
+set_location_assignment PIN_121 -to Seg[4]
+set_location_assignment PIN_124 -to Seg[3]
+set_location_assignment PIN_125 -to Seg[2]
+set_location_assignment PIN_126 -to Seg[1]
+set_location_assignment PIN_127 -to Seg[0]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to Seg[6]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to Seg[5]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to Seg[4]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to Seg[3]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to Seg[2]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to Seg[1]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to Seg[0]
+set_location_assignment PIN_23 -to clk
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to clk
+set_location_assignment PIN_58 -to Sw[0]
+set_location_assignment PIN_68 -to Sw[7]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to Sw[7]
+set_location_assignment PIN_59 -to Sw[1]
+set_location_assignment PIN_60 -to Sw[2]
+set_location_assignment PIN_64 -to Sw[3]
+set_location_assignment PIN_65 -to Sw[4]
+set_location_assignment PIN_66 -to Sw[5]
+set_location_assignment PIN_67 -to Sw[6]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to Sw[6]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to Sw[5]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to Sw[4]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to Sw[3]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to Sw[2]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to Sw[1]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to Sw[0]
+set_location_assignment PIN_90 -to Key[0]
+set_location_assignment PIN_91 -to Key[1]
+set_location_assignment PIN_87 -to Key[2]
+set_location_assignment PIN_86 -to Key[3]
+set_location_assignment PIN_138 -to Led[7]
+set_location_assignment PIN_137 -to Led[6]
+set_location_assignment PIN_128 -to Led[0]
+set_location_assignment PIN_136 -to Led[5]
+set_location_assignment PIN_135 -to Led[4]
+set_location_assignment PIN_133 -to Led[3]
+set_location_assignment PIN_132 -to Led[2]
+set_location_assignment PIN_129 -to Led[1]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to Led[6]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to Key[3]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to Key[2]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to Key[1]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to Key[0]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to Led[7]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to Led[5]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to Led[4]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to Led[3]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to Led[2]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to Led[1]
+set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to Led[0]
+set_global_assignment -name CDF_FILE output_files/Chain.cdf
+set_instance_assignment -name PARTITION_HIERARCHY root_partition -to | -section_id Top
