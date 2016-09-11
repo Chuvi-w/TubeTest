@@ -23,15 +23,16 @@ module TubeTest
 (
 input clk,
 input wire [3:0] Key, //4 кнопочки
-input wire[7:0] Sw, //Переключатели
+input wire[0:7] Sw, //Переключатели
 output wire Dot, //Точка 
 output wire [6:0] Seg,//7 сегментов индикатора. Как и точка, светятся при 0, не светятся при 1.
 output wire [7:0] Led //Сами индикаторы. Светятся те, которые в 0.
 );
 
 parameter LedSwitchBit = 10; //бит счётчика, при изменении которого происходит переключение индикатора.
-parameter LedBlinkBit=16;//бит счётчика для мигания настраеваемого светодиода.
+parameter LedBlinkBit=23;//бит счётчика для мигания настраеваемого светодиода.
 wire  SegEnabled;
+wire IsEditingCurrentLed;
 wire [3:0]DispNum;//Число, отображаемое идикатором. (0-F)
 
 reg [2:0] CurrentActiveLed;
@@ -39,6 +40,7 @@ reg [1:0] CurrentEditGroup;
 reg EditMode;
 reg [31:0] ClockCount;
 reg [31:0]StoredNum;
+reg [31:0]EditNum;
 reg [3:0]OldKey;
 reg [3:0]ButtonLock;
 assign Dot=1'b1;//Точка не нужна.
@@ -51,9 +53,13 @@ assign Seg[4]= ~DispNum[3]&(DispNum[0]|DispNum[2]&~DispNum[1])|~DispNum[2]&~Disp
 assign Seg[5]= ~(DispNum[3]|DispNum[2])&(DispNum[1]|DispNum[0])|DispNum[0]&(~DispNum[3]&DispNum[1]|DispNum[3]&DispNum[2]&~DispNum[1]);
 assign Seg[6]= ~DispNum[3]&(~(DispNum[2]|DispNum[1])|DispNum[2]&DispNum[1]&DispNum[0])|DispNum[3]&DispNum[2]&~(DispNum[0]|DispNum[1]);
 //assign Led=8'b0;
-assign SegEnabled=ClockCount[LedSwitchBit+1];
+
+//assign IsEditingCurrentLed=ClockCount[LedBlinkBit]&EditMode&(((!CurrentEditGroup[0]&!CurrentActiveLed[0])|(CurrentEditGroup[0]&CurrentActiveLed[0]))&((!CurrentEditGroup[1]&!CurrentActiveLed[1])|(CurrentEditGroup[1]&CurrentActiveLed[1])));
+//assign  IsEditingCurrentLed=ClockCount[LedBlinkBit]&EditMode&(!CurrentEditGroup[1]&!CurrentActiveLed[2]|CurrentEditGroup[1]&CurrentActiveLed[2])&(!CurrentEditGroup[0]&!CurrentActiveLed[1]|CurrentEditGroup[0]&CurrentActiveLed[1]);
+assign  IsEditingCurrentLed=ClockCount[LedBlinkBit]&&EditMode&&(CurrentEditGroup==CurrentActiveLed[2:1]);
+assign SegEnabled=ClockCount[LedSwitchBit+1]&(!IsEditingCurrentLed);
 assign Led=~(SegEnabled<<CurrentActiveLed);
-assign DispNum=(StoredNum&4'hF<<(4*CurrentActiveLed))>>(4*CurrentActiveLed);
+assign DispNum=((EditMode?EditNum:StoredNum)&4'hF<<(4*CurrentActiveLed))>>(4*CurrentActiveLed);
 
 initial                                                
 begin                                                  
@@ -64,7 +70,7 @@ begin
   OldKey=4'b1111; //
   ButtonLock=3'b0000;
   CurrentEditGroup=2'b00;
-  EditMode=1'b0
+  EditMode=1'b0;
 end      
 
 always @ ( posedge clk ) ClockCount<=ClockCount+1;
@@ -77,34 +83,54 @@ begin
 end
 
 
-always @ (posedge ClockCount[15])	ButtonLock<=4'b0000;
+always @ (posedge ClockCount[15])	ButtonLock=4'b0000;
 always @ (posedge clk )
 begin
-	if(OldKey[3]!=Key[3])
+	if(OldKey[3]!=Key[3]&&EditMode)
 	begin
 		OldKey[3]=Key[3];
-		if(!Key[3])
+		if(!Key[3]&&!ButtonLock[3])
 		begin
 			CurrentEditGroup=CurrentEditGroup-1;
-			ButtonLock[3]=1'b1;
+			//ButtonLock[3]=1'b1;
 		end
 	end
-	else if(OldKey[2]!=Key[2])
+	else if(OldKey[2]!=Key[2]&&EditMode)
 	begin
 		OldKey[2]=Key[2];
-		if(!Key[2])
+		if(!Key[2]&&!ButtonLock[2])
 		begin
 			CurrentEditGroup=CurrentEditGroup+1;
-			ButtonLock[2]=1'b1;
+			//ButtonLock[2]=1'b1;
 		end
 	end
 	else if(OldKey[1]!=Key[1])
 	begin
 		OldKey[1]=Key[1];
-		if(!Key[1])
+		if(!Key[1]&&!ButtonLock[1])
 		begin
 			EditMode=!EditMode;
+			if(EditMode)	EditNum=StoredNum;
+			//ButtonLock[1]=1'b1;
 		end
+	end
+	else if(OldKey[0]!=Key[0])
+	begin
+		OldKey[0]=Key[0];
+		if(!Key[0]&&!ButtonLock[0])
+		begin
+			StoredNum=EditNum;
+			//ButtonLock[1]=1'b1;
+		end
+	end
+	if(EditMode)
+	begin
+		case (CurrentEditGroup)
+		  2'b00 : EditNum[7:0]=Sw;
+		  2'b01 : EditNum[15:8]=Sw;
+		  2'b10 : EditNum[23:16]=Sw;
+		  2'b11 : EditNum[31:24]=Sw;
+endcase
 	end
 end
 	
